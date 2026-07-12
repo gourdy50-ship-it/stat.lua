@@ -1,106 +1,252 @@
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
 
-local player = Players.LocalPlayer
+local LocalPlayer = Players.LocalPlayer
 
--- Hide all existing UI
+
+--========================
+-- STAT CUTSCENE
+--========================
+
 local hiddenUI = {}
 
-for _, ui in pairs(player.PlayerGui:GetChildren()) do
+for _, ui in pairs(LocalPlayer.PlayerGui:GetChildren()) do
 	if ui:IsA("ScreenGui") then
 		hiddenUI[ui] = ui.Enabled
 		ui.Enabled = false
 	end
 end
 
--- Create cutscene UI
-local gui = Instance.new("ScreenGui")
-gui.Name = "STAT_Cutscene"
-gui.IgnoreGuiInset = true
-gui.ResetOnSpawn = false
-gui.Parent = game:GetService("CoreGui")
 
--- Device scaling
-local scale = Instance.new("UIScale")
-scale.Parent = gui
+local Cutscene = Instance.new("ScreenGui")
+Cutscene.Name = "STAT_Cutscene"
+Cutscene.IgnoreGuiInset = true
+Cutscene.ResetOnSpawn = false
+Cutscene.Parent = game:GetService("CoreGui")
 
-local viewport = workspace.CurrentCamera.ViewportSize
+
+local Scale = Instance.new("UIScale")
+Scale.Parent = Cutscene
 
 if UserInputService.TouchEnabled then
-	scale.Scale = math.clamp(viewport.X / 900, 0.7, 1)
+	Scale.Scale = 0.8
 else
-	scale.Scale = math.clamp(viewport.X / 1200, 0.8, 1.2)
+	Scale.Scale = 1
 end
 
--- Background
-local bg = Instance.new("Frame")
-bg.Size = UDim2.fromScale(1,1)
-bg.BackgroundColor3 = Color3.fromRGB(0,0,0)
-bg.Parent = gui
 
--- Image
-local img = Instance.new("ImageLabel")
-img.AnchorPoint = Vector2.new(0.5,0.5)
-img.Size = UDim2.fromScale(0.35,0.35)
-img.Position = UDim2.fromScale(0.5,0.4)
-img.BackgroundTransparency = 1
+local Background = Instance.new("Frame")
+Background.Size = UDim2.fromScale(1,1)
+Background.BackgroundColor3 = Color3.fromRGB(0,0,0)
+Background.Parent = Cutscene
 
--- Stats Leaderboard Bars Icon
-img.Image = "rbxthumb://type=Asset&id=16851789345&w=420&h=420"
 
-img.ImageTransparency = 1
-img.ScaleType = Enum.ScaleType.Fit
-img.Parent = bg
+local Image = Instance.new("ImageLabel")
+Image.AnchorPoint = Vector2.new(0.5,0.5)
+Image.Position = UDim2.fromScale(0.5,0.4)
+Image.Size = UDim2.fromScale(0.35,0.35)
+Image.BackgroundTransparency = 1
+Image.Image = "rbxthumb://type=Asset&id=16851789345&w=420&h=420"
+Image.ScaleType = Enum.ScaleType.Fit
+Image.ImageTransparency = 1
+Image.Parent = Background
 
--- STAT Text
-local title = Instance.new("TextLabel")
-title.AnchorPoint = Vector2.new(0.5,0.5)
-title.Size = UDim2.fromScale(0.5,0.1)
-title.Position = UDim2.fromScale(0.5,0.72)
-title.BackgroundTransparency = 1
-title.Text = "STAT"
-title.Font = Enum.Font.FredokaOne
-title.TextScaled = true
-title.TextColor3 = Color3.fromRGB(255,255,255)
-title.TextStrokeTransparency = 0.2
-title.TextStrokeColor3 = Color3.fromRGB(0,0,0)
-title.TextTransparency = 1
-title.Parent = bg
 
--- Fade in
-TweenService:Create(img, TweenInfo.new(1), {
+local Title = Instance.new("TextLabel")
+Title.AnchorPoint = Vector2.new(0.5,0.5)
+Title.Position = UDim2.fromScale(0.5,0.72)
+Title.Size = UDim2.fromScale(0.5,0.1)
+Title.BackgroundTransparency = 1
+Title.Text = "STAT"
+Title.Font = Enum.Font.FredokaOne
+Title.TextScaled = true
+Title.TextColor3 = Color3.fromRGB(255,255,255)
+Title.TextStrokeTransparency = 0
+Title.TextTransparency = 1
+Title.Parent = Background
+
+
+TweenService:Create(Image,TweenInfo.new(1),{
 	ImageTransparency = 0
 }):Play()
 
-TweenService:Create(title, TweenInfo.new(1), {
+TweenService:Create(Title,TweenInfo.new(1),{
 	TextTransparency = 0
 }):Play()
 
--- Hold for 5 seconds
+
 task.wait(5)
 
--- Fade out
-TweenService:Create(img, TweenInfo.new(1), {
+
+TweenService:Create(Image,TweenInfo.new(1),{
 	ImageTransparency = 1
 }):Play()
 
-TweenService:Create(title, TweenInfo.new(1), {
+TweenService:Create(Title,TweenInfo.new(1),{
 	TextTransparency = 1
 }):Play()
 
-TweenService:Create(bg, TweenInfo.new(1), {
-	BackgroundTransparency = 1
-}):Play()
 
 task.wait(1)
 
--- Remove cutscene
-gui:Destroy()
+Cutscene:Destroy()
 
--- Restore UI
-for ui, state in pairs(hiddenUI) do
+
+for ui,state in pairs(hiddenUI) do
 	if ui then
 		ui.Enabled = state
 	end
 end
+
+
+
+--========================
+-- WIND UI
+--========================
+
+local WindUI = loadstring(game:HttpGet(
+	"https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"
+))()
+
+
+local Window = WindUI:CreateWindow({
+	Title = "STAT",
+	Icon = "eye",
+	Author = "STAT",
+	Folder = "STAT"
+})
+
+
+local Main = Window:Tab({
+	Title = "Main",
+	Icon = "home"
+})
+
+
+local Visual = Window:Tab({
+	Title = "Visual",
+	Icon = "eye"
+})
+
+
+local Fun = Window:Tab({
+	Title = "Fun",
+	Icon = "sparkles"
+})
+
+
+
+--========================
+-- NPC ESP + NOTIFICATIONS
+--========================
+
+local ESPRunning = false
+
+
+local function SendNotification(title,text,duration)
+
+	pcall(function()
+		StarterGui:SetCore("SendNotification",{
+			Title = title,
+			Text = text,
+			Duration = duration
+		})
+	end)
+
+end
+
+
+
+local function StartNPCESP()
+
+	ESPRunning = true
+
+	task.spawn(function()
+
+		while ESPRunning do
+
+			for _,e in pairs(workspace.NPCs:GetChildren()) do
+
+
+				if e:FindFirstChildOfClass("Highlight") then
+					continue
+				end
+
+
+				local h = Instance.new("Highlight")
+				h.FillTransparency = 0.85
+
+
+				local isPatient = e:GetAttribute("IsPatient")
+				local skinwalker = e:GetAttribute("Skinwalker")
+
+
+				if (isPatient == false or isPatient == nil) and skinwalker then
+
+					SendNotification(
+						"AnimalHospital — Notification",
+						"A skinwalker entered the building, name: "..e.Name,
+						10
+					)
+
+					h.OutlineColor = Color3.fromRGB(0,0,0)
+					h.FillColor = Color3.fromRGB(0,0,0)
+
+
+				elseif isPatient == true or isPatient == nil then
+
+					SendNotification(
+						"AnimalHospital — Notification",
+						"A patient entered the building, name: "..e.Name,
+						10
+					)
+
+					h.OutlineColor = Color3.fromRGB(51,153,51)
+					h.FillColor = Color3.fromRGB(0,255,0)
+
+
+				else
+
+					SendNotification(
+						"AnimalHospital — Notification",
+						"A visitor entered the building, name: "..e.Name,
+						10
+					)
+
+					h.OutlineColor = Color3.fromRGB(255,255,255)
+					h.FillColor = Color3.fromRGB(255,255,255)
+
+				end
+
+
+				h.Parent = e
+
+			end
+
+
+			task.wait(0.1)
+
+		end
+
+	end)
+
+end
+
+
+
+Visual:Toggle({
+	Title = "NPC ESP + Notifications",
+	Default = false,
+
+	Callback = function(state)
+
+		if state then
+			StartNPCESP()
+		else
+			ESPRunning = false
+		end
+
+	end
+})
