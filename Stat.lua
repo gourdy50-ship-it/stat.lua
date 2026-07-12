@@ -139,7 +139,7 @@ local Fun = Window:Tab({
 
 
 --========================
--- NPC ESP + NOTIFICATIONS
+-- NPC ESP 
 --========================
 
 local ESPRunning = false
