@@ -237,7 +237,7 @@ end
 
 
 Visual:Toggle({
-	Title = "NPC ESP + Notifications",
+	Title = "NPC ESP",
 	Default = false,
 
 	Callback = function(state)
