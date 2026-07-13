@@ -6,10 +6,6 @@ local StarterGui = game:GetService("StarterGui")
 local LocalPlayer = Players.LocalPlayer
 
 
---========================
--- STAT CUTSCENE
---========================
-
 local hiddenUI = {}
 
 for _, ui in pairs(LocalPlayer.PlayerGui:GetChildren()) do
@@ -102,10 +98,6 @@ end
 
 
 
---========================
--- WIND UI
---========================
-
 local WindUI = loadstring(game:HttpGet(
 	"https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"
 ))()
@@ -137,10 +129,6 @@ local Fun = Window:Tab({
 })
 
 
-
---========================
--- NPC ESP 
---========================
 
 local ESPRunning = false
 
